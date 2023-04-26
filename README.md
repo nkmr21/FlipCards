@@ -36,30 +36,35 @@ import {
 
 export const Home: React.FC = () => {
   const progress = useSharedValue(0);
+  const cardHight = useSharedValue(500);
 
   const frontAnimatedStyle = useAnimatedStyle(
     () => ({
       opacity: progress.value <= 90 || progress.value >= 270 ? 1 : 0,
       transform: [{rotateY: `${progress.value}deg`}],
+      height: cardHight.value,
     }),
-    [progress],
+    [],
   );
 
   const backAnimatedStyle = useAnimatedStyle(
     () => ({
       opacity: progress.value > 90 && progress.value < 270 ? 1 : 0,
       transform: [{rotateY: `${progress.value - 180}deg`}],
+      height: cardHight.value,
     }),
-    [progress],
+    [],
   );
 
   const showOppsiteFace = useCallback(() => {
     if (progress.value <= 90) {
       progress.value = withTiming(180, {duration: 1000});
+      cardHight.value = withTiming(600, {duration: 1000});
     } else {
       progress.value = withTiming(0, {duration: 1000});
+      cardHight.value = withTiming(500, {duration: 1000});
     }
-  }, [progress]);
+  }, [progress, cardHight]);
 
   const data = [
     {x: 'aaa', y: 1},
@@ -91,7 +96,9 @@ export const Home: React.FC = () => {
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
-        <View style={{alignItems: 'center', height: 500}}>
+        <Button title="Flip" onPress={() => showOppsiteFace()} />
+
+        <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
           <View>
             <View>
               <Animated.View style={[styles.card, styles.front, frontAnimatedStyle]}>
@@ -143,73 +150,7 @@ export const Home: React.FC = () => {
             </View>
           </View>
         </View>
-        <Button title="Flip" onPress={() => showOppsiteFace()} />
       </SafeAreaView>
-      {/* <View style={{flex: 1, justifyContent: 'flex-end'}}>
-        <Animated.View
-          style={[
-            {
-              width: '100%',
-              // height: 100,
-              backgroundColor: '#ffffff',
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              borderWidth: 3,
-            },
-            style,
-          ]}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 30}}>
-            <Text>Hanako</Text>
-            <View style={{width: 100, height: 50, backgroundColor: 'yellow'}}>
-              <Button
-                title="toggle"
-                onPress={() => {
-                  setState(prev => !prev);
-                }}
-              />
-            </View>
-          </View>
-          <View style={{borderTopWidth: 3, padding: 30}}>
-            <Text>最新の健康スコア</Text>
-            <Button
-              title="alert"
-              onPress={() => {
-                alert('alert');
-              }}
-            />
-            <Button
-              title="alert"
-              onPress={() => {
-                alert('alert');
-              }}
-            />
-            <Button
-              title="alert"
-              onPress={() => {
-                alert('alert');
-              }}
-            />
-            <Button
-              title="alert"
-              onPress={() => {
-                alert('alert');
-              }}
-            />
-            <Button
-              title="alert"
-              onPress={() => {
-                alert('alert');
-              }}
-            />
-            <Button
-              title="alert"
-              onPress={() => {
-                alert('alert');
-              }}
-            />
-          </View>
-        </Animated.View>
-      </View> */}
     </>
   );
 };
@@ -220,13 +161,15 @@ const styles = StyleSheet.create({
     height: 500,
     position: 'absolute',
     left: -150, // 中心からの差分を入力する？
+    bottom: -700, //上に伸びるようにするためにbottomを指定した
   },
   front: {
     backgroundColor: 'blue',
     backfaceVisibility: 'hidden',
   },
   back: {
-    backgroundColor: 'yellow',
+    backgroundColor: 'pink',
   },
 });
+
 ```
